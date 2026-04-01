@@ -1,309 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SA MOVE SHOW</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<script src='//libtl.com/sdk.js' data-zone='10813439' data-sdk='show_10813439'></script>
-
-<style>
-:root {
-    --primary: #00e6ff;
-    --bg: #000;
-}
-
-body {
-    margin:0;
-    font-family: sans-serif;
-    background:#000;
-    color:#fff;
-    padding:15px;
-}
-
-/* HEADER */
-.header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.logo {
-    font-size:22px;
-    font-weight:bold;
-}
-.logo span {
-    color:var(--primary);
-}
-
-.user-profile {
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:#111;
-    padding:5px 12px;
-    border-radius:20px;
-}
-
-.user-profile img {
-    width:25px;
-    height:25px;
-    border-radius:50%;
-}
-
-/* SEARCH */
-.search-container input {
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    background:#111;
-    color:#fff;
-}
-
-/* CARD */
-.video-card {
-    background:#111;
-    border-radius:15px;
-    margin-bottom:20px;
-    overflow:hidden;
-}
-
-.thumb {
-    position:relative;
-    height:200px;
-    cursor: pointer;
-}
-.thumb img {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-.play {
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:#00e6ff;
-    color:#000;
-    width:55px;
-    height:55px;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size: 20px;
-}
-
-.info {
-    padding:12px;
-    font-size:14px;
-}
-
-.stats {
-    font-size:12px;
-    color:#aaa;
-    margin-top:5px;
-}
-
-.btns {
-    display:flex;
-    gap:10px;
-    margin-top:10px;
-}
-
-.btn-watch {
-    flex:2;
-    background:#00e6ff;
-    border:none;
-    padding:12px;
-    border-radius:8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-share {
-    flex:1;
-    background:#222;
-    border:none;
-    color:#fff;
-    border-radius:8px;
-    cursor: pointer;
-}
-
-/* PLAYER */
-#modal {
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#000;
-    z-index: 9999;
-}
-
-video {
-    width:100%;
-    height: auto;
-    max-height: 80vh;
-    margin-top: 15vh;
-}
-
-.close {
-    position:absolute;
-    top:20px;
-    right:20px;
-    font-size:35px;
-    color: #fff;
-    cursor: pointer;
-    z-index: 10000;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SA MOVE SHOW</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src='//libtl.com/sdk.js' data-zone='10813439' data-sdk='show_10813439'></script>
+    <style>
+        :root { --primary: #00e6ff; --bg: #000; }
+        body { margin: 0; font-family: sans-serif; background: #000; color: #fff; padding: 15px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo { font-size: 22px; font-weight: bold; }
+        .logo span { color: var(--primary); }
+        .user-profile { display: flex; align-items: center; gap: 8px; background: #111; padding: 5px 12px; border-radius: 20px; }
+        .user-profile img { width: 25px; height: 25px; border-radius: 50%; }
+        .search-container input { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #111; color: #fff; box-sizing: border-box; }
+        .video-card { background: #111; border-radius: 15px; margin-bottom: 20px; overflow: hidden; }
+        .thumb { position: relative; height: 200px; cursor: pointer; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #00e6ff; color: #000; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; }
+        .info { padding: 12px; font-size: 14px; }
+        .stats { font-size: 12px; color: #aaa; margin-top: 5px; }
+        .btns { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-watch { flex: 2; background: #00e6ff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-share { flex: 1; background: #222; border: none; color: #fff; border-radius: 8px; cursor: pointer; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
+        video { width: 100%; height: auto; max-height: 80vh; margin-top: 15vh; }
+        .close { position: absolute; top: 20px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10000; }
+    </style>
 </head>
-
 <body>
-
-<div class="header">
-    <div class="logo">SA <span>MOVE</span></div>
-    <div class="user-profile">
-        <span id="name">User</span>
-        <img id="pic" src="https://via.placeholder.com/25">
-    </div>
-</div>
-
-<div class="search-container">
-    <input type="text" id="search" placeholder="Search episode (1-80)..." onkeyup="filterVideos()">
-</div>
-
-<div id="grid"></div>
-
-<div id="modal">
-    <span class="close" onclick="closePlayer()">✕</span>
-    <video id="player" controls playsinline></video>
-</div>
-
-<script>
-// TELEGRAM WEB APP EXPAND
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-if(tg.initDataUnsafe.user){
-    document.getElementById("name").innerText = tg.initDataUnsafe.user.first_name;
-    if(tg.initDataUnsafe.user.photo_url){
-        document.getElementById("pic").src = tg.initDataUnsafe.user.photo_url;
-    }
-}
-
-// VIEWS GENERATOR
-function formatViews(num){
-    if(num>=1000000) return (num/1000000).toFixed(1)+"M views";
-    if(num>=1000) return Math.floor(num/1000)+"K views";
-    return num+" views";
-}
-
-// VIDEO DATABASE (১-৮০ লজিকসহ)
-const videos = [];
-
-for(let i=1; i<=80; i++){
-    let views = Math.floor(Math.random()*80000)+20000;
-    let likes = Math.floor(views*(Math.random()*0.08+0.02));
-    
-    let videoUrl = "";
-
-    // আপনার দেওয়া পর্ব ভিত্তিক ভিডিও লিংক লজিক
-    if(i >= 1 && i <= 8) videoUrl = "http://ddl.safone.vip/4472421/_Bachelor_Point_Season_5_episode_1_8_Combined_Bengali_BongoBD_Web.mkv?hash=AgADaB";
-    else if(i >= 9 && i <= 16) videoUrl = "http://ddl.safone.vip/4472463/_Bachelor_point_season_5_episode_9_16_Combined_720p_Web_DL_%40ScreenTimeBD.mkv?hash=AgADyx";
-    else if(i >= 17 && i <= 24) videoUrl = "http://ddl.safone.vip/4472465/Bachelor+Point+2025+S05+Episode+17-24+Combined+720p.mkv?hash=AgADth";
-    else if(i >= 25 && i <= 32) videoUrl = "http://ddl.safone.vip/4472467/Bachelor+Point+2025.Bangla.+Episode+25_32.720p.BongoBD.W.mkv?hash=AgADMS";
-    else if(i >= 33 && i <= 40) videoUrl = "http://ddl.safone.vip/4472469/3340.mkv?hash=AgADAh";
-    else if(i >= 41 && i <= 48) videoUrl = "http://ddl.safone.vip/4472471/Bachelor+Point+%282025%29+S05+E41-48+Bengali+BongoBD+720p.mkv?hash=AgADAh";
-    else if(i >= 49 && i <= 56) videoUrl = "http://ddl.safone.vip/4472473/%E2%80%8E%E0%A6%A6%E0%A7%87%E0%A6%96%E0%A6%BE_%E0%A6%AF%E0%A6%BE%E0%A6%95_%E0%A6%86%E0%A6%AA%E0%A6%A8%E0%A6%BE%E0%A6%A6%E0%A7%87%E0%A6%B0_%E0%A6%8F%E0%A6%95%E0%A7%8D%E0%A6%9F%E0%A6%BF%E0%A6%AD%E0%A6%BF%E0%A6%9F%E0%A6%BF?hash=AgADoC";
-    else if(i >= 57 && i <= 64) videoUrl = "http://ddl.safone.vip/4472475/None?hash=AgADDh";
-    else if(i >= 65 && i <= 72) videoUrl = "http://ddl.safone.vip/4472477/None?hash=AgADlR";
-    else if(i >= 73 && i <= 80) videoUrl = "http://ddl.safone.vip/4472479/Bachelor+Point+%282025%29+S05+E73-80+BongoBD+480p+WEB-DL+H+x.mkv?hash=AgADLz";
-
-    videos.push({
-        id: i,
-        title: `Bachelor Point Episode ${i}`,
-        video: videoUrl,
-        thumb: `thumbs/${i}.jpg`, // আপনার আপলোড করা ১-৮০ ছবি
-        views: formatViews(views),
-        likes: likes.toLocaleString()+" likes"
-    });
-}
-
-// LOAD GRID
-function load(data){
-    document.getElementById("grid").innerHTML = data.map(v=>`
-        <div class="video-card">
-            <div class="thumb" onclick="playVideo('${v.video}')">
-                <img src="${v.thumb}" onerror="this.src='https://via.placeholder.com/400x200?text=Image+Loading...'">
-                <div class="play">▶</div>
-            </div>
-            <div class="info">
-                <b>${v.title}</b>
-                <div class="stats">👁️ ${v.views} • ❤️ ${v.likes}</div>
-                <div class="btns">
-                    <button class="btn-watch" onclick="playVideo('${v.video}')">WATCH NOW</button>
-                    <button class="btn-share" onclick="share('${v.title}')">Share</button>
-                </div>
-            </div>
+    <div class="header">
+        <div class="logo">SA <span>MOVE</span></div>
+        <div class="user-profile">
+            <span id="name">User</span>
+            <img id="pic" src="https://via.placeholder.com/25">
         </div>
-    `).join('');
-}
+    </div>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search episode (57-80)..." onkeyup="filterVideos()">
+    </div>
+    <div id="grid"></div>
+    <div id="modal">
+        <span class="close" onclick="closePlayer()">✕</span>
+        <video id="player" controls playsinline></video>
+    </div>
 
-// SEARCH
-function filterVideos(){
-    let val = document.getElementById("search").value.toLowerCase();
-    let f = videos.filter(v => v.title.toLowerCase().includes(val) || v.id == val);
-    load(f);
-}
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-// SHARE
-function share(title){
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=Watch ${title} on SA MOVE SHOW`);
-}
+        if (tg.initDataUnsafe.user) {
+            document.getElementById("name").innerText = tg.initDataUnsafe.user.first_name;
+            if (tg.initDataUnsafe.user.photo_url) {
+                document.getElementById("pic").src = tg.initDataUnsafe.user.photo_url;
+            }
+        }
 
-// PLAY VIDEO WITH REWARDED AD
-function playVideo(src){
-    if(typeof show_10813439 === 'function'){
-        // ১৫ সেকেন্ডের রিওয়ার্ড অ্যাড লোড হচ্ছে
-        show_10813439().then(() => {
-            // অ্যাড সফলভাবে দেখা শেষ হলে
-            start(src);
-        }).catch((e) => {
-            // অ্যাড লোড না হলে বা ফেইল করলে সরাসরি ভিডিও চলবে
-            console.log("Ad Error:", e);
-            start(src);
-        });
-    } else {
-        start(src);
-    }
-}
+        function formatViews(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + "M views";
+            if (num >= 1000) return Math.floor(num / 1000) + "K views";
+            return num + " views";
+        }
 
-// START PLAYER
-function start(src){
-    document.getElementById("modal").style.display="block";
-    let p = document.getElementById("player");
-    p.src = src;
-    p.type = "video/x-matroska"; // .mkv ফরম্যাটের জন্য
-    p.play();
-}
+        const videos = [];
+        
+        // এখানে আপনার নতুন ভিডিও ডিরেক্ট লিঙ্ক বসান
+        const directLink = "https://download2276.mediafire.com/hc4wuwu7dudl6aq/VID_20260307_140310_787.mp4";
 
-// CLOSE PLAYER
-function closePlayer(){
-    let p = document.getElementById("player");
-    p.pause();
-    p.src="";
-    document.getElementById("modal").style.display="none";
-}
+        // ১-৫৬ বাদ দিয়ে ৫৭-৮০ পর্যন্ত লুপ
+        for (let i = 57; i <= 80; i++) {
+            let views = Math.floor(Math.random() * 80000) + 20000;
+            let likes = Math.floor(views * (Math.random() * 0.08 + 0.02));
 
-load(videos);
-</script>
+            videos.push({
+                id: i,
+                title: `Bachelor Point Episode ${i}`,
+                video: directLink,
+                thumb: `thumbs/${i}.jpg`, // ৫৭.jpg থেকে ৮০.jpg পর্যন্ত শো করবে
+                views: formatViews(views),
+                likes: likes.toLocaleString() + " likes"
+            });
+        }
 
+        function load(data) {
+            document.getElementById("grid").innerHTML = data.map(v => `
+                <div class="video-card">
+                    <div class="thumb" onclick="playVideo('${v.video}')">
+                        <img src="${v.thumb}" onerror="this.src='https://via.placeholder.com/400x200?text=Episode+${v.id}'">
+                        <div class="play">▶</div>
+                    </div>
+                    <div class="info">
+                        <b>${v.title}</b>
+                        <div class="stats">👁️ ${v.views} • ❤️ ${v.likes}</div>
+                        <div class="btns">
+                            <button class="btn-watch" onclick="playVideo('${v.video}')">WATCH NOW</button>
+                            <button class="btn-share" onclick="share('${v.title}')">Share</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterVideos() {
+            let val = document.getElementById("search").value.toLowerCase();
+            let f = videos.filter(v => v.title.toLowerCase().includes(val) || v.id == val);
+            load(f);
+        }
+
+        function share(title) {
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=Watch ${title} on SA MOVE SHOW`);
+        }
+
+        function playVideo(src) {
+            if (typeof show_10813439 === 'function') {
+                show_10813439().then(() => { start(src); }).catch((e) => { start(src); });
+            } else { start(src); }
+        }
+
+        function start(src) {
+            document.getElementById("modal").style.display = "block";
+            let p = document.getElementById("player");
+            p.src = src;
+            p.play();
+        }
+
+        function closePlayer() {
+            let p = document.getElementById("player");
+            p.pause();
+            p.src = "";
+            document.getElementById("modal").style.display = "none";
+        }
+
+        load(videos);
+    </script>
 </body>
-</html>
+    </html>
