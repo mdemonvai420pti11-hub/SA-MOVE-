@@ -1,138 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA MOVE SHOW</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//libtl.com/sdk.js' data-zone='10813439' data-sdk='show_10813439'></script>
-    <style>
-        :root { --primary: #00e6ff; --bg: #000; }
-        body { margin: 0; font-family: sans-serif; background: #000; color: #fff; padding: 15px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo { font-size: 22px; font-weight: bold; }
-        .logo span { color: var(--primary); }
-        .user-profile { display: flex; align-items: center; gap: 8px; background: #111; padding: 5px 12px; border-radius: 20px; }
-        .user-profile img { width: 25px; height: 25px; border-radius: 50%; }
-        .search-container input { width: 100%; padding: 12px; border-radius: 10px; border: none; background: #111; color: #fff; box-sizing: border-box; }
-        .video-card { background: #111; border-radius: 15px; margin-bottom: 20px; overflow: hidden; }
-        .thumb { position: relative; height: 200px; cursor: pointer; }
-        .thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #00e6ff; color: #000; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; }
-        .info { padding: 12px; font-size: 14px; }
-        .stats { font-size: 12px; color: #aaa; margin-top: 5px; }
-        .btns { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-watch { flex: 2; background: #00e6ff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-share { flex: 1; background: #222; border: none; color: #fff; border-radius: 8px; cursor: pointer; }
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
-        video { width: 100%; height: auto; max-height: 80vh; margin-top: 15vh; }
-        .close { position: absolute; top: 20px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10000; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA MOVE SHOW</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src='//libtl.com/sdk.js' data-zone='10813439' data-sdk='show_10813439'></script>
+
+<style>
+:root {
+    --primary: #00e6ff;
+    --pink: #ff00cc;
+    --green: #00ff88;
+    --bg: #000;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #000;
+    color: #fff;
+    padding: 15px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+.logo span {
+    color: var(--primary);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+/* SEARCH */
+.search-container input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--primary);
+    background: #111;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0,230,255,0.4);
+}
+
+/* CARD */
+.video-card {
+    background: linear-gradient(145deg, #111, #1a1a1a);
+    border-radius: 18px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,230,255,0.3);
+    transition: 0.3s;
+}
+
+.video-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 0 25px rgba(255,0,200,0.7);
+}
+
+/* THUMB */
+.thumb {
+    position: relative;
+    height: 200px;
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.thumb::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #00e6ff, #ff00cc, #00ff88);
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+}
+
+/* PLAY BUTTON */
+.play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(45deg, #00e6ff, #ff00cc);
+    color: #000;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    box-shadow: 0 0 20px rgba(255,0,200,0.6);
+}
+
+/* INFO */
+.info {
+    padding: 12px;
+}
+.stats {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.btn-watch {
+    width: 100%;
+    margin-top: 10px;
+    background: linear-gradient(45deg, #00e6ff, #ff00cc);
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* MODAL PLAYER */
+#modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+}
+
+#player-container {
+    width: 100%;
+    height: 100%;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 35px;
+    cursor: pointer;
+    z-index: 10000;
+}
+</style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="logo">SA <span>MOVE</span></div>
-        <div class="user-profile">
-            <span id="name">User</span>
-            <img id="pic" src="https://via.placeholder.com/25">
+
+<div class="header">
+    <div class="logo">SA <span>MOVE</span></div>
+    <div class="user-profile">
+        <span id="name">User</span>
+        <img id="pic" src="https://via.placeholder.com/25">
+    </div>
+</div>
+
+<div class="search-container">
+    <input type="text" id="search" placeholder="Search episode..." onkeyup="filterVideos()">
+</div>
+
+<div id="grid"></div>
+
+<div id="modal">
+    <span class="close" onclick="closePlayer()">✕</span>
+    <div id="player-container"></div>
+</div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+if (tg.initDataUnsafe.user) {
+    document.getElementById("name").innerText = tg.initDataUnsafe.user.first_name;
+    if (tg.initDataUnsafe.user.photo_url) {
+        document.getElementById("pic").src = tg.initDataUnsafe.user.photo_url;
+    }
+}
+
+/* VIDEO DATA */
+const youtubeLinks = {
+    57: "6BHTR0PdRrY",
+    58: "N5WbN9QreT4",
+    59: "81O0F7ZpI4c",
+    60: "3R7HkFvI9-k",
+    61: "x9B6pD7oQ2w",
+    62: "m5N9V3rE4k8",
+    63: "L1p9S4vR2k0",
+    64: "P8v7K3mN1r5"
+};
+
+const videos = [];
+for (let i = 57; i <= 80; i++) {
+    let videoId = youtubeLinks[i] || youtubeLinks[57];
+
+    videos.push({
+        id: i,
+        title: `Bachelor Point Episode ${i}`,
+        youtubeId: videoId,
+        thumb: `thumbs/${i}.jpg`,
+        views: (Math.floor(Math.random() * 80) + 20) + "K views"
+    });
+}
+
+/* LOAD UI */
+function load(data) {
+    document.getElementById("grid").innerHTML = data.map(v => `
+        <div class="video-card">
+            <div class="thumb" onclick="playVideo('${v.youtubeId}')">
+                <img src="${v.thumb}" onerror="this.src='https://via.placeholder.com/400x200?text=Episode+${v.id}'">
+                <div class="play">▶</div>
+            </div>
+            <div class="info">
+                <b>${v.title}</b>
+                <div class="stats">👁️ ${v.views}</div>
+                <button class="btn-watch" onclick="playVideo('${v.youtubeId}')">WATCH NOW</button>
+            </div>
         </div>
-    </div>
-    <div class="search-container">
-        <input type="text" id="search" placeholder="Search episode (57-80)..." onkeyup="filterVideos()">
-    </div>
-    <div id="grid"></div>
-    <div id="modal">
-        <span class="close" onclick="closePlayer()">✕</span>
-        <video id="player" controls playsinline></video>
-    </div>
+    `).join('');
+}
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+/* PLAYER */
+function playVideo(id) {
+    if (typeof show_10813439 === 'function') {
+        show_10813439().then(() => start(id)).catch(() => start(id));
+    } else {
+        start(id);
+    }
+}
 
-        if (tg.initDataUnsafe.user) {
-            document.getElementById("name").innerText = tg.initDataUnsafe.user.first_name;
-            if (tg.initDataUnsafe.user.photo_url) {
-                document.getElementById("pic").src = tg.initDataUnsafe.user.photo_url;
-            }
-        }
+function start(id) {
+    document.getElementById("modal").style.display = "block";
 
-        function formatViews(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + "M views";
-            if (num >= 1000) return Math.floor(num / 1000) + "K views";
-            return num + " views";
-        }
+    document.getElementById("player-container").innerHTML = `
+    <iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&disablekb=1&playsinline=1"
+    allow="autoplay; encrypted-media"
+    allowfullscreen></iframe>`;
+}
 
-        const videos = [];
-        
-        // এখানে আপনার নতুন ভিডিও ডিরেক্ট লিঙ্ক বসান
-        const directLink = "https://download2276.mediafire.com/hc4wuwu7dudl6aq/VID_20260307_140310_787.mp4";
+function closePlayer() {
+    document.getElementById("modal").style.display = "none";
+    document.getElementById("player-container").innerHTML = "";
+}
 
-        // ১-৫৬ বাদ দিয়ে ৫৭-৮০ পর্যন্ত লুপ
-        for (let i = 57; i <= 80; i++) {
-            let views = Math.floor(Math.random() * 80000) + 20000;
-            let likes = Math.floor(views * (Math.random() * 0.08 + 0.02));
+/* SEARCH */
+function filterVideos() {
+    let val = document.getElementById("search").value.toLowerCase();
+    load(videos.filter(v => v.id == val || v.title.toLowerCase().includes(val)));
+}
 
-            videos.push({
-                id: i,
-                title: `Bachelor Point Episode ${i}`,
-                video: directLink,
-                thumb: `thumbs/${i}.jpg`, // ৫৭.jpg থেকে ৮০.jpg পর্যন্ত শো করবে
-                views: formatViews(views),
-                likes: likes.toLocaleString() + " likes"
-            });
-        }
+load(videos);
+</script>
 
-        function load(data) {
-            document.getElementById("grid").innerHTML = data.map(v => `
-                <div class="video-card">
-                    <div class="thumb" onclick="playVideo('${v.video}')">
-                        <img src="${v.thumb}" onerror="this.src='https://via.placeholder.com/400x200?text=Episode+${v.id}'">
-                        <div class="play">▶</div>
-                    </div>
-                    <div class="info">
-                        <b>${v.title}</b>
-                        <div class="stats">👁️ ${v.views} • ❤️ ${v.likes}</div>
-                        <div class="btns">
-                            <button class="btn-watch" onclick="playVideo('${v.video}')">WATCH NOW</button>
-                            <button class="btn-share" onclick="share('${v.title}')">Share</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterVideos() {
-            let val = document.getElementById("search").value.toLowerCase();
-            let f = videos.filter(v => v.title.toLowerCase().includes(val) || v.id == val);
-            load(f);
-        }
-
-        function share(title) {
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=Watch ${title} on SA MOVE SHOW`);
-        }
-
-        function playVideo(src) {
-            if (typeof show_10813439 === 'function') {
-                show_10813439().then(() => { start(src); }).catch((e) => { start(src); });
-            } else { start(src); }
-        }
-
-        function start(src) {
-            document.getElementById("modal").style.display = "block";
-            let p = document.getElementById("player");
-            p.src = src;
-            p.play();
-        }
-
-        function closePlayer() {
-            let p = document.getElementById("player");
-            p.pause();
-            p.src = "";
-            document.getElementById("modal").style.display = "none";
-        }
-
-        load(videos);
-    </script>
 </body>
-    </html>
+</html>
