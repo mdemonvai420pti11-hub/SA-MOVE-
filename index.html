@@ -58,7 +58,7 @@
             }
         }
 
-        // ৫৭ থেকে ৮০ পর্যন্ত প্রতিটি পর্বে আপনার দেওয়া এই ভিডিওটি সেট করা হয়েছে
+        // সব পর্বে আপাতত এই একই ভিডিও আইডি থাকবে (niLM7NpovxY)
         const defaultId = "niLM7NpovxY";
         const youtubeLinks = {};
         for (let i = 57; i <= 80; i++) {
@@ -71,7 +71,8 @@
                 id: i,
                 title: `Bachelor Point Episode ${i}`,
                 youtubeId: youtubeLinks[i],
-                thumbPath: `Thumbs/${i}.jpg`, 
+                // ফোল্ডারের নাম 'thumbs' এবং এক্সটেনশন '.jpg' সবই ছোট হাতের করে দেওয়া হয়েছে
+                thumbPath: `thumbs/${i}.jpg`, 
                 views: (Math.floor(Math.random() * 80) + 20) + "K views"
             });
         }
@@ -80,7 +81,7 @@
             document.getElementById("grid").innerHTML = data.map(v => `
                 <div class="video-card">
                     <div class="thumb" onclick="playVideo('${v.youtubeId}')">
-                        <img src="${v.thumbPath}" onerror="this.src='https://via.placeholder.com/400x200?text=Episode+${v.id}'">
+                        <img src="${v.thumbPath}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
                         <div class="play">▶</div>
                     </div>
                     <div class="info">
@@ -102,7 +103,6 @@
 
         function start(id) {
             document.getElementById("modal").style.display = "block";
-            // www.youtube-nocookie.com ব্যবহার করা হয়েছে
             document.getElementById("player-container").innerHTML = 
                 `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         }
@@ -120,4 +120,4 @@
         load(videos);
     </script>
 </body>
-    </html>
+</html>
