@@ -55,11 +55,13 @@
             font-weight: bold;
             color: #fff;
             transition: 0.3s;
+            border: none;
         }
 
         .btn-yt { background: #ff0000; }
         .btn-tg { background: #0088cc; }
-        .btn-done { background: var(--primary); margin-top: 20px; cursor: pointer; border: none; color: #000; }
+        .btn-fb { background: #1877F2; } /* ফেসবুকের জন্য নীল কালার */
+        .btn-done { background: var(--primary); margin-top: 20px; cursor: pointer; color: #000; }
 
         /* ✨ ইউনিক লোগো ডিজাইন */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 5px; }
@@ -94,7 +96,6 @@
         }
 
         @keyframes borderGlow { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
-
         .inner-card { background: #111; border-radius: 14px; overflow: hidden; }
         .thumb { position: relative; height: 210px; }
         .thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -112,9 +113,10 @@
     <div id="lock-overlay">
         <div class="lock-box">
             <h2>চ্যানেল লক! 🔒</h2>
-            <p>ভিডিও দেখতে হলে আমাদের ইউটিউব এবং টেলিগ্রাম ব্যাকআপ চ্যানেলে জয়েন করতে হবে।</p>
+            <p>ভিডিও দেখতে হলে আমাদের ইউটিউব, টেলিগ্রাম এবং ফেসবুক পেজে জয়েন/ফলো করতে হবে।</p>
             <a href="https://www.youtube.com/@SajidAhmod-l7w" target="_blank" class="lock-btn btn-yt" onclick="markJoined('yt')">YouTube সাবস্ক্রাইব করুন</a>
             <a href="https://t.me/+nTwdyOPjMU44Zjll" target="_blank" class="lock-btn btn-tg" onclick="markJoined('tg')">Telegram জয়েন করুন</a>
+            <a href="https://www.facebook.com/share/14ZQjmz1MrK/" target="_blank" class="lock-btn btn-fb" onclick="markJoined('fb')">Facebook ফলো করুন</a>
             <button class="lock-btn btn-done" onclick="checkLock()">আমি জয়েন করেছি (Done)</button>
         </div>
     </div>
@@ -125,7 +127,7 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search Episodes (57-80)..." onkeyup="filterEpisodes()">
+        <input type="text" id="searchInput" placeholder="Search Episodes (65-80)..." onkeyup="filterEpisodes()">
     </div>
 
     <div id="grid"></div>
@@ -141,35 +143,57 @@
 
         let joinedYT = localStorage.getItem('joinedYT') === 'true';
         let joinedTG = localStorage.getItem('joinedTG') === 'true';
+        let joinedFB = localStorage.getItem('joinedFB') === 'true';
 
         function markJoined(type) {
             if(type === 'yt') { joinedYT = true; localStorage.setItem('joinedYT', 'true'); }
             if(type === 'tg') { joinedTG = true; localStorage.setItem('joinedTG', 'true'); }
+            if(type === 'fb') { joinedFB = true; localStorage.setItem('joinedFB', 'true'); }
         }
 
         function checkLock() {
-            if(joinedYT && joinedTG) {
+            if(joinedYT && joinedTG && joinedFB) {
                 document.getElementById('lock-overlay').style.display = 'none';
             } else {
-                alert("দয়া করে দুটি চ্যানেলেই জয়েন করুন!");
+                alert("দয়া করে সবগুলো চ্যানেলে জয়েন এবং পেজে ফলো করুন!");
             }
         }
 
-        if(joinedYT && joinedTG) {
+        if(joinedYT && joinedTG && joinedFB) {
             document.getElementById('lock-overlay').style.display = 'none';
         }
 
         const user = tg.initDataUnsafe.user;
         if (user) { document.getElementById('user-display').innerText = user.first_name || "User"; }
 
-        const linkGroup1 = "https://dl.springsfern.in/wt/AAAAAbjepQNS-EhPAAAfDg/0QhSeBvOSNAH27EEDv5Li3KraHhzxO59Tg_GuuP4VY8";
-        const linkGroup2 = "https://dl.springsfern.in/wt/AAAAAbjepQNQKdhdAAAdlQ/2vdrL8Du9-Y0YaruJdjWVYoGfKUVQx87NpY6SFBwpZ0";
-        const linkGroup3 = "https://dl.springsfern.in/wt/AAAAAbjepQNR8Oa5AAAwLw/xGBH0nYS-HP7IasOY4uwTQ5QWNvqghgD5710WXhzqpE";
+        // New Episode Links (65-80)
+        const episodeLinks = {
+            65: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfuA/lYloQjMbcbg51sK0uNoynb4mw8GyY4oz1JUroy9q6Aw",
+            66: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfwA/dNc_kW5C0lM96mnd23AsK0GWBcp69PrIuhHyI-sV8i4",
+            67: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfwQ/RS4dE-cWTpzz67opBuppVuuwf_cjXjUUPl6LyIF3LrY",
+            68: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfxQ/5pG-kiVvhfScGy88qUYkscXJJBAPwxUgcs2A5uUNBfw",
+            69: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfxg/HDOqfvyXkn3HOi55Msf42KBbN6l-cGdVslpRUc6Yq8A",
+            70: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfxw/lfK2muc1n_W7iNfV_uO4JGQzWlb7EWsoIMZ9EOKlPkQ",
+            71: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfyA/dx9mg9bT4wKAJUwAPDOBKnRbZgpApKnKh06Q4y0PDUQ",
+            72: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfyQ/Syx0q4VXl1iN1etYp0GYU94L8y1uYKnRY3Zdv2cyIfA",
+            73: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAfzw/SKJgmpazeLjd8VUstT63IbJJTr9HQhZ70URqxnWWp1w",
+            74: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf0A/GT8kWhjPW33sht_aRZ71NYbmQIg-V5NshdJnz_gZa-0",
+            75: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf0g/WDmahM44USvvNbNwuB-JugZKcC6pmNodhP6lciSU1GU",
+            76: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf1A/DPkLP581mGnYU3sQYfWhUPp3N38OG_76Edsvq7S-7AQ",
+            77: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf4Q/VMud8UP-G9cIUyHTbOznL0-nnvDqI1C8QKoFJugDWcs",
+            78: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf4g/ft9yhiWxogGFhnsL6P8ISoDo0B-9xbsISE50CAVnpMc",
+            79: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf4w/tTPIJ008Bud7hp0WDokEfUHinJgKofF_-7ZtUHL-rmI",
+            80: "https://dl.springsfern.in/wt/AAAAAcOP04BWiM2IAAAf5A/6EA3OqCAVzuUV5IWcOlCyF0-L-mp2lB6rrHbltZf2Dw"
+        };
 
         const videos = [];
-        for (let i = 57; i <= 80; i++) {
-            let currentLink = (i <= 64) ? linkGroup1 : (i <= 72) ? linkGroup2 : linkGroup3;
-            videos.push({ id: i, title: `Bachelor Point Episode ${i}`, link: currentLink, thumb: `thumbs/${i}.jpg` });
+        for (let i = 65; i <= 80; i++) {
+            videos.push({ 
+                id: i, 
+                title: `Bachelor Point Episode ${i}`, 
+                link: episodeLinks[i], 
+                thumb: `thumbs/${i}.jpg` 
+            });
         }
 
         function load(data) {
@@ -212,4 +236,4 @@
         load(videos);
     </script>
 </body>
-    </html>
+</html>
